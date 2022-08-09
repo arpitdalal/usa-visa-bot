@@ -1,7 +1,6 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const request = require("request");
-const chromium = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer");
 const express = require("express");
 
@@ -23,7 +22,10 @@ async function start(res) {
   const transporter = nodemailer.createTransport(
     `smtps://${process.env.NODEMAILER_USER}:${process.env.NODEMAILER_PASSWORD}@${process.env.NODEMAILER_HOST}`
   );
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox","--disable-setuid-sandbox"]
+  });
 
   const page = await browser.newPage();
   await page.goto("https://ais.usvisa-info.com/en-ca/niv/users/sign_in");
