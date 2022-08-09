@@ -172,21 +172,21 @@ function sendNotification(
         text: `<strong>📅 Available USA B1/B2 visa dates are</strong>
           \n<strong>Toronto</strong>\n${toronto
             .toString()
-            .replaceAll(",", ",\n")}
+            .replace(/,/g, ",\n")}
           \n<strong>Calgary</strong>\n${calgary
             .toString()
-            .replaceAll(",", ",\n")}
+            .replace(/,/g, ",\n")}
           \n<strong>Halifax</strong>\n${halifax
             .toString()
-            .replaceAll(",", ",\n")}
+            .replace(/,/g, ",\n")}
           \n<strong>Montreal</strong>\n${montreal
             .toString()
-            .replaceAll(",", ",\n")}
-          \n<strong>Ottawa</strong>\n${ottawa.toString().replaceAll(",", ",\n")}
-          \n<strong>Quebec</strong>\n${quebec.toString().replaceAll(",", ",\n")}
+            .replace(/,/g, ",\n")}
+          \n<strong>Ottawa</strong>\n${ottawa.toString().replace(/,/g, ",\n")}
+          \n<strong>Quebec</strong>\n${quebec.toString().replace(/,/g, ",\n")}
           \n<strong>Vancouver</strong>\n${vancouver
             .toString()
-            .replaceAll(",", ",\n")}`,
+            .replace(/,/g, ",\n")}`,
       };
 
       request(
