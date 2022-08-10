@@ -8,13 +8,10 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const User = require("./models/user");
 
-mongoose.connect(
-  "mongodb://mongo:v5bqzMkBcFj6wDfETifl@containers-us-west-37.railway.app:7691",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-);
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", function () {
