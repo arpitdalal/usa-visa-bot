@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const today = new Date();
   let dd = today.getDate() + 1;
-  let mm = today.getMonth() + 1; //January is 0 so need to add 1 to make it 1!
+  let mm = today.getMonth() + 1;
   let yyyy = today.getFullYear();
   if (dd < 10) {
     dd = "0" + dd;
@@ -57,8 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "Please check the login email and password for USA website is correct",
       )
     ) {
-      if (date.value < tomorrow) {
-        alert("Your selected date is in the past. Please select a future date");
+      if (date.value && date.value < tomorrow) {
+        alert("Your desired date is in the past. Please select a future date");
         return;
       }
 

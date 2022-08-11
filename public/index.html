@@ -25,127 +25,133 @@
       Signup to get email notifications for available USA visa dates
     </h1>
 
-    <main class="mx-auto para">
-      <h2 class="text-center mt-5">How it works?</h2>
-      <div class="mt-3">
-        <p>
-          Enter your <strong>login credentials (email and password)</strong> in
-          the first 2 fields in the form below along with the
-          <strong>email address</strong> you want to get notifications on in the
-          3rd field.
-        </p>
-        <p>
-          Every <strong>5 minutes</strong> you will receive an email with the
-          available visa dates at available locations in Canada.
-        </p>
-        <p>
-          Optionally you can <strong>select a date</strong> and if there is a
-          visa date available before that, you will receive an email.
-        </p>
-        <p>
-          <strong>
-            Note: If you select the optional date, you will not receive any
-            emails if there is no visa dates available before the selected date.
-          </strong>
-        </p>
-      </div>
+    <main class="mx-auto para mt-5">
+      <section>
+        <h2 class="text-center">How it works?</h2>
+        <div class="mt-3">
+          <p>
+            Enter your <strong>login credentials (email and password)</strong> in
+            the first 2 fields in the form below along with the
+            <strong>email address</strong> you want to get notifications on in the
+            3rd field.
+          </p>
+          <p>
+            Every <strong>5 minutes</strong> you will receive an email with the
+            available visa dates at available locations in Canada.
+          </p>
+          <p>
+            Optionally you can <strong>select a desired date</strong> and if there is a
+            visa date available before that, you will receive an email.
+          </p>
+          <p>
+            <strong>
+              Note: If you select the desired date, you will not receive any
+              emails if there is no visa dates available before the desired date. Your notification service will be cancelled once the desired date has passed. To avoid that, you can select a future date as your desired date by going to <a href="/profile">your profile</a> or removing the desired date completely to get notifications for every date available.
+            </strong>
+          </p>
+        </div>
+      </section>
 
-      <form id="signup-form" class="mt-5">
+      <a href="profile" class="btn btn-primary">Your profile</a>
+
+      <section class="mt-5">
         <h2 class="text-center mb-4">Signup</h2>
+        <form id="signup-form" class="mt-3">
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="email"
+                class="form-control"
+                id="username"
+                aria-describedby="usernameHelp"
+                placeholder="Enter email"
+                required
+              />
+              <label for="floatingInput">Email address</label>
+            </div>
+            <div id="usernameHelp" class="form-text">
+              The email address you have registered with on
+              <a
+                href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-primary"
+                >USA visa website</a
+              >.
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                aria-describedby="passwordHelp"
+                placeholder="Enter password"
+                required
+              />
+              <label for="password">
+                Password <span class="text-danger">*</span>
+              </label>
+            </div>
+            <span id="show-password" class="link-primary mb-0" role="button">Show password</span>
+            <div id="passwordHelp" class="form-text">
+              The password used to log into
+              <a
+                href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-primary"
+                >USA visa website</a
+              >
+              with the above email address.
+            </div>
+          </div>
+  
+          <div class="my-4">
+            <hr />
+          </div>
+  
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+                required
+              />
+              <label for="email">
+                Email address <span class="text-danger">*</span>
+              </label>
+            </div>
+            <div id="emailHelp" class="form-text">
+              You'll get notification on this email address.
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="date"
+                class="form-control"
+                id="date"
+                placeholder="Enter date"
+                aria-describedby="dateHelp"
+              />
+              <label for="date">Desired date</label>
+            </div>
+            <div id="dateHelp" class="form-text">
+              Optionally select a date and if we find a visa date available before
+              that, you will receive an email.
+            </div>
+          </div>
+          <div class="mb-3">
+            <button id="submit-btn" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </section>
 
-        <div class="mb-3">
-          <div class="form-floating">
-            <input
-              type="email"
-              class="form-control"
-              id="username"
-              aria-describedby="usernameHelp"
-              placeholder="Enter email"
-              required
-            />
-            <label for="floatingInput">Email address</label>
-          </div>
-          <div id="usernameHelp" class="form-text">
-            The email address you have registered with on
-            <a
-              href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link-primary"
-              >USA visa website</a
-            >.
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="form-floating">
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              aria-describedby="passwordHelp"
-              placeholder="Enter password"
-              required
-            />
-            <label for="password">
-              Password <span class="text-danger">*</span>
-            </label>
-          </div>
-          <span id="show-password" class="link-primary mb-0" role="button">Show password</span>
-          <div id="passwordHelp" class="form-text">
-            The password used to log into
-            <a
-              href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link-primary"
-              >USA visa website</a
-            >
-            with the above email address.
-          </div>
-        </div>
-
-        <div class="my-4">
-          <hr />
-        </div>
-
-        <div class="mb-3">
-          <div class="form-floating">
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
-              required
-            />
-            <label for="email">
-              Email address <span class="text-danger">*</span>
-            </label>
-          </div>
-          <div id="emailHelp" class="form-text">
-            You'll get notification on this email address.
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="form-floating">
-            <input
-              type="date"
-              class="form-control"
-              id="date"
-              placeholder="Enter date"
-              aria-describedby="dateHelp"
-            />
-            <label for="date">Date</label>
-          </div>
-          <div id="dateHelp" class="form-text">
-            Optionally select a date and if we find a visa date available before
-            that, you will receive an email.
-          </div>
-        </div>
-        <div class="mb-3">
-          <button id="submit-btn" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
     </main>
 
     <!-- Modal -->
@@ -175,13 +181,13 @@
               available visa dates at available locations in Canada.
             </p>
             <p>
-              Optionally you can <strong>select a date</strong> and if there is a
+              Optionally you can <strong>select a desired date</strong> and if there is a
               visa date available before that, you will receive an email.
             </p>
             <p>
               <strong>
-                Note: If you select the optional date, you will not receive any
-                emails if there is no visa dates available before the selected date.
+                Note: If you select the desired date, you will not receive any
+                emails if there is no visa dates available before the desired date. Your notification service will be cancelled once the desired date has passed. To avoid that, you can select a future date as your desired date by going to <a href="/profile">your profile</a> or removing the desired date completely to get notifications for every date available.
               </strong>
             </p>
           </div>
