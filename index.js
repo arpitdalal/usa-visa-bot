@@ -28,10 +28,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.get("/", async (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/index.html"));
-});
+app.use(express.static("public"));
 
 app.post("/signup", async (req, res) => {
   try {
@@ -122,7 +119,7 @@ app
     console.log(err);
   });
 
-async function runJob(res, { email, username, password }) {
+async function runJob(res, { email, username, password, date: selectedDate }) {
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -235,6 +232,44 @@ async function runJob(res, { email, username, password }) {
   let vancouver = vanJson.map((item) => item.date);
 
   await browser.close();
+
+  if (selectedDate) {
+    toronto.map((date) => {
+      if (!(new Date(date) < new Date(selectedDate))) {
+        toronto = [];
+      }
+    });
+    vancouver.map((date) => {
+      if (!(new Date(date) < new Date(selectedDate))) {
+        vancouver = [];
+      }
+    });
+    quebec.map((date) => {
+      if (!(new Date(date) < new Date(selectedDate))) {
+        quebec = [];
+      }
+    });
+    ottawa.map((date) => {
+      if (!(new Date(date) < new Date(selectedDate))) {
+        ottawa = [];
+      }
+    });
+    montreal.map((date) => {
+      if (!(new Date(date) < new Date(selectedDate))) {
+        montreal = [];
+      }
+    });
+    halifax.map((date) => {
+      if (!(new Date(date) < new Date(selectedDate))) {
+        halifax = [];
+      }
+    });
+    calgary.map((date) => {
+      if (!(new Date(date) < new Date(selectedDate))) {
+        calgary = [];
+      }
+    });
+  }
 
   if (
     !toronto.length > 0 &&

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>USA visa date notification signup</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <!-- Custom CSS -->
+    <link href="style.css" rel="stylesheet" />
+  </head>
+
+  <body
+    class="container my-5"
+  >
+    <h1 class="text-center">
+      Signup to get email notifications for available USA visa dates
+    </h1>
+
+    <main class="mx-auto para">
+      <h2 class="text-center mt-5">How it works?</h2>
+      <div class="mt-3">
+        <p>
+          Enter your <strong>login credentials (email and password)</strong> in
+          the first 2 fields in the form below along with the
+          <strong>email address</strong> you want to get notifications on in the
+          3rd field.
+        </p>
+        <p>
+          Every <strong>5 minutes</strong> you will receive an email with the
+          available visa dates at available locations in Canada.
+        </p>
+        <p>
+          Optionally you can <strong>select a date</strong> and if there is a
+          visa date available before that, you will receive an email.
+        </p>
+        <p>
+          <strong>
+            Note: If you select the optional date, you will not receive any
+            emails if there is no visa dates available before the selected date.
+          </strong>
+        </p>
+      </div>
+
+      <form id="signup-form" class="mt-5">
+        <h2 class="text-center mb-4">Signup</h2>
+
+        <div class="mb-3">
+          <div class="form-floating">
+            <input
+              type="email"
+              class="form-control"
+              id="username"
+              aria-describedby="usernameHelp"
+              placeholder="Enter email"
+              required
+            />
+            <label for="floatingInput">Email address</label>
+          </div>
+          <div id="usernameHelp" class="form-text">
+            The email address you have registered with on
+            <a
+              href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link-primary"
+              >USA visa website</a
+            >.
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="form-floating">
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              aria-describedby="passwordHelp"
+              placeholder="Enter password"
+              required
+            />
+            <label for="password">
+              Password <span class="text-danger">*</span>
+            </label>
+          </div>
+          <span id="show-password" class="link-primary mb-0" role="button">Show password</span>
+          <div id="passwordHelp" class="form-text">
+            The password used to log into
+            <a
+              href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link-primary"
+              >USA visa website</a
+            >
+            with the above email address.
+          </div>
+        </div>
+
+        <div class="my-4">
+          <hr />
+        </div>
+
+        <div class="mb-3">
+          <div class="form-floating">
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              aria-describedby="emailHelp"
+              placeholder="Enter email"
+              required
+            />
+            <label for="email">
+              Email address <span class="text-danger">*</span>
+            </label>
+          </div>
+          <div id="emailHelp" class="form-text">
+            You'll get notification on this email address.
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="form-floating">
+            <input
+              type="date"
+              class="form-control"
+              id="date"
+              placeholder="Enter date"
+              aria-describedby="dateHelp"
+            />
+            <label for="date">Date</label>
+          </div>
+          <div id="dateHelp" class="form-text">
+            Optionally select a date and if we find a visa date available before
+            that, you will receive an email.
+          </div>
+        </div>
+        <div class="mb-3">
+          <button id="submit-btn" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </main>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="modal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="modalLabel"
+      aria-hidden="true"
+      style="display: none;"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">How it works?</h5>
+          </div>
+          <div class="modal-body">
+            <p>
+              Enter your <strong>login credentials (email and password)</strong> in
+              the first 2 fields in the form along with the
+              <strong>email address</strong> you want to get notifications on in the
+              3rd field.
+            </p>
+            <p>
+              Every <strong>5 minutes</strong> you will receive an email with the
+              available visa dates at available locations in Canada.
+            </p>
+            <p>
+              Optionally you can <strong>select a date</strong> and if there is a
+              visa date available before that, you will receive an email.
+            </p>
+            <p>
+              <strong>
+                Note: If you select the optional date, you will not receive any
+                emails if there is no visa dates available before the selected date.
+              </strong>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="understand-btn" class="btn btn-primary">I understand</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Script -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+      integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
+      integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Custom Script -->
+    <script src="script.js"></script>
+  </body>
+</html>

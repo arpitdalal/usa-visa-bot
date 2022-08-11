@@ -13,6 +13,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  date: {
+    type: String,
+    default: null,
+  },
 });
 
 const User = mongoose.model("User", UserSchema);
