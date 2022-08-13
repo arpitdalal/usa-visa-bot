@@ -155,10 +155,8 @@ async function runJob(res, user) {
   if (date) {
     const desiredDate = new Date(date);
 
-    const today = new Date();
-    const tomorrow = getTomorrowDate();
-
-    if (desiredDate < new Date(tomorrow)) {
+    if (isTomorrow(date)) {
+      console.log("desired date is tomorrow");
       const messageOptions = {
         from: "arpitdalalm@gmail.com",
         to: email,
@@ -172,7 +170,8 @@ async function runJob(res, user) {
       });
     }
 
-    if (desiredDate > today) {
+    if (isInThePast(desiredDate)) {
+      console.log("desired date is gone");
       const messageOptions = {
         from: "arpitdalalm@gmail.com",
         to: email,
@@ -539,4 +538,42 @@ function getTomorrowDate() {
     mm = "0" + mm;
   }
   return yyyy + "-" + mm + "-" + dd;
+}
+
+function isTomorrow(date) {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // 👇️ Tomorrow's date
+  console.log(tomorrow);
+
+  if (tomorrow.toDateString() === date.toDateString()) {
+    return true;
+  }
+
+  return false;
+}
+
+function isInTheFuture(date) {
+  const today = new Date();
+
+  // 👇️ OPTIONAL!
+  // This line sets the time of the current date to the
+  // last millisecond, so the comparison returns `true` only if
+  // date is at least tomorrow
+  today.setHours(23, 59, 59, 998);
+
+  return date > today;
+}
+
+function isInThePast(date) {
+  const today = new Date();
+
+  // 👇️ OPTIONAL!
+  // This line sets the hour of the current date to midnight
+  // so the comparison only returns `true` if the passed in date
+  // is at least yesterday
+  today.setHours(0, 0, 0, 0);
+
+  return date < today;
 }
