@@ -528,6 +528,7 @@ async function getAvailableDates(username, password) {
 }
 
 function getTomorrowDate() {
+  const today = new Date();
   let dd = today.getDate() + 1;
   let mm = today.getMonth() + 1;
   let yyyy = today.getFullYear();
