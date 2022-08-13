@@ -138,9 +138,11 @@ app.get("/run-job", async (req, res) => {
 
   await runJob(res, user);
 });
+const PORT = process.env.PORT || 3000;
+app.set("port", PORT);
 
 app
-  .listen(process.env.PORT || 3000, () => {
+  .listen(PORT, () => {
     console.log("http://localhost:3000");
   })
   .on("error", (err) => {
