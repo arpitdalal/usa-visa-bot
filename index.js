@@ -416,10 +416,16 @@ async function getAvailableDates(username, password) {
     document.querySelector("input[type='submit']").click();
   });
   await page.waitForSelector("[role='menuitem'] > .button.primary.small");
+  await page.evaluate(() => {
+    document.querySelector("[role='menuitem'] > .button.primary.small").click();
+  });
+  await page.waitForSelector("#main");
+  const url = page.url();
+  const id = url.replace(/\D/g, "");
 
   // Calgary
   await page.goto(
-    "https://ais.usvisa-info.com/en-ca/niv/schedule/41501222/appointment/days/89.json?appointments[expedite]=false",
+    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/89.json?appointments[expedite]=false`,
   );
   await page.waitForSelector("body > pre");
   const calData = await page
@@ -432,7 +438,7 @@ async function getAvailableDates(username, password) {
 
   // Halifax
   await page.goto(
-    "https://ais.usvisa-info.com/en-ca/niv/schedule/41501222/appointment/days/90.json?appointments[expedite]=false",
+    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/90.json?appointments[expedite]=false`,
   );
   await page.waitForSelector("body > pre");
   const halData = await page
@@ -445,7 +451,7 @@ async function getAvailableDates(username, password) {
 
   // Montreal
   await page.goto(
-    "https://ais.usvisa-info.com/en-ca/niv/schedule/41501222/appointment/days/91.json?appointments[expedite]=false",
+    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/91.json?appointments[expedite]=false`,
   );
   await page.waitForSelector("body > pre");
   const monData = await page
@@ -458,7 +464,7 @@ async function getAvailableDates(username, password) {
 
   // Ottawa
   await page.goto(
-    "https://ais.usvisa-info.com/en-ca/niv/schedule/41501222/appointment/days/92.json?appointments[expedite]=false",
+    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/92.json?appointments[expedite]=false`,
   );
   await page.waitForSelector("body > pre");
   const ottData = await page
@@ -471,7 +477,7 @@ async function getAvailableDates(username, password) {
 
   // Quebec
   await page.goto(
-    "https://ais.usvisa-info.com/en-ca/niv/schedule/41501222/appointment/days/93.json?appointments[expedite]=false",
+    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/93.json?appointments[expedite]=false`,
   );
   await page.waitForSelector("body > pre");
   const queData = await page
@@ -484,7 +490,7 @@ async function getAvailableDates(username, password) {
 
   // Toronto
   await page.goto(
-    "https://ais.usvisa-info.com/en-ca/niv/schedule/41501222/appointment/days/94.json?appointments[expedite]=false",
+    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/94.json?appointments[expedite]=false`,
   );
   await page.waitForSelector("body > pre");
   const torData = await page
@@ -497,7 +503,7 @@ async function getAvailableDates(username, password) {
 
   // Vancouver
   await page.goto(
-    "https://ais.usvisa-info.com/en-ca/niv/schedule/41501222/appointment/days/95.json?appointments[expedite]=false",
+    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/95.json?appointments[expedite]=false`,
   );
   await page.waitForSelector("body > pre");
   const vanData = await page
