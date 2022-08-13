@@ -40,6 +40,8 @@ app.post("/signup", async (req, res) => {
       });
     }
 
+    const minutes = generateMinutes();
+
     request(
       {
         uri: `https://api.cron-job.org/jobs`,
@@ -58,7 +60,7 @@ app.post("/signup", async (req, res) => {
               timezone: "America/Toronto",
               hours: [-1],
               mdays: [-1],
-              minutes: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
+              minutes,
               months: [-1],
               wdays: [-1],
             },
@@ -578,4 +580,21 @@ function isInThePast(date) {
   today.setHours(0, 0, 0, 0);
 
   return date < today;
+}
+
+function getRandomNumber(max, min) {
+  return Math.round(Math.random() * (max - min)) + min;
+}
+
+function generateMinutes() {
+  const minute = getRandomNumber(0, 5);
+  let currentMinute = minute;
+  let minutes = [currentMinute];
+
+  for (let i = 0; i < 11; i++) {
+    currentMinute += 5;
+    minutes.push(currentMinute);
+  }
+
+  return minutes;
 }
