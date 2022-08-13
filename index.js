@@ -98,6 +98,29 @@ app.get("/profile", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "profile.html"));
 });
 
+app.post("/login", (req, res) => {
+  const { username, email, password } = req.body;
+  User.findOne({ email, username, password }, (err, user) => {
+    console.log({ username, email, password });
+    if (err) {
+      res.status(500).send({
+        ok: false,
+        message: "Login failed",
+      });
+    } else if (!user) {
+      res.status(400).send({
+        ok: false,
+        message: "Login failed",
+      });
+    } else {
+      res.status(200).send({
+        ok: true,
+        message: "Login successful",
+      });
+    }
+  });
+});
+
 app.get("/run-job", async (req, res) => {
   const email = req.query.email;
   if (!email) {
