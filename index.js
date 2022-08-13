@@ -155,7 +155,7 @@ async function runJob(res, user) {
   if (date) {
     const desiredDate = new Date(date);
 
-    if (isTomorrow(date)) {
+    if (isTomorrow(desiredDate)) {
       console.log("desired date is tomorrow");
       const messageOptions = {
         from: "arpitdalalm@gmail.com",
@@ -215,37 +215,37 @@ async function runJob(res, user) {
     }
 
     toronto.map((date) => {
-      if (!(new Date(date) < new Date(desiredDate))) {
+      if (!(new Date(date) < desiredDate)) {
         toronto = [];
       }
     });
     vancouver.map((date) => {
-      if (!(new Date(date) < new Date(desiredDate))) {
+      if (!(new Date(date) < desiredDate)) {
         vancouver = [];
       }
     });
     quebec.map((date) => {
-      if (!(new Date(date) < new Date(desiredDate))) {
+      if (!(new Date(date) < desiredDate)) {
         quebec = [];
       }
     });
     ottawa.map((date) => {
-      if (!(new Date(date) < new Date(desiredDate))) {
+      if (!(new Date(date) < desiredDate)) {
         ottawa = [];
       }
     });
     montreal.map((date) => {
-      if (!(new Date(date) < new Date(desiredDate))) {
+      if (!(new Date(date) < desiredDate)) {
         montreal = [];
       }
     });
     halifax.map((date) => {
-      if (!(new Date(date) < new Date(desiredDate))) {
+      if (!(new Date(date) < desiredDate)) {
         halifax = [];
       }
     });
     calgary.map((date) => {
-      if (!(new Date(date) < new Date(desiredDate))) {
+      if (!(new Date(date) < desiredDate)) {
         calgary = [];
       }
     });
