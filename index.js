@@ -153,7 +153,7 @@ app
 
 async function runJob(res, user) {
   const { email, username, password, date, jobId } = user;
-  const { calgary, halifax, montreal, ottawa, quebec, toronto, vancouver } =
+  let { calgary, halifax, montreal, ottawa, quebec, toronto, vancouver } =
     await getAvailableDates(username, password);
 
   if (date) {
