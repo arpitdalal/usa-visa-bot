@@ -22,6 +22,7 @@ const transporter = nodemailer.createTransport(
   `smtps://${process.env.NODEMAILER_USER}:${process.env.NODEMAILER_PASSWORD}@${process.env.NODEMAILER_HOST}`,
 );
 const runJobUrl = "https://usa-visa.herokuapp.com/run-job?email=";
+const cronJobApiBaseUrl = "https://api.cron-job.org/";
 
 // express server
 const app = express();
@@ -44,7 +45,7 @@ app.post("/signup", async (req, res) => {
 
     request(
       {
-        uri: `https://api.cron-job.org/jobs`,
+        uri: `${cronJobApiBaseUrl}jobs`,
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -188,29 +189,36 @@ async function runJob(res, user) {
         } else {
           request(
             {
-              uri: `https://api.cron-job.org/jobs/${jobId}`,
-              method: "DELETE",
+              uri: `${cronJobApiBaseUrl}jobs/${jobId}`,
+              method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${process.env.CRON_JOB_API_KEY}`,
               },
+              json: {
+                job: {
+                  enabled: false,
+                },
+              },
             },
             async (err, _, body) => {
+              console.log("request sent");
               if (err) {
+                console.log("error", err);
                 const messageOptions = {
                   from: "arpitdalalm@gmail.com",
                   to: "arpitdalalm@gmail",
                   subject: "ERROR: USA visa notification service",
                   html: `Deleting ${jobId} failed. Error: ${err}`,
                 };
-                transporter.sendMail(
-                  messageOptions,
-                  (err = {
-                    if(err) {
-                      console.log(`Error sending email: ${err}`);
-                    },
-                  }),
-                );
+                transporter.sendMail(messageOptions, (err) => {
+                  if (err) {
+                    console.log(`Error sending email: ${err}`);
+                  }
+                });
+              }
+              if (!err) {
+                console.log(body);
               }
             },
           );
