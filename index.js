@@ -21,7 +21,6 @@ db.once("open", function () {
 const transporter = nodemailer.createTransport(
   `smtps://${process.env.NODEMAILER_USER}:${process.env.NODEMAILER_PASSWORD}@${process.env.NODEMAILER_HOST}`,
 );
-const runJobUrl = "https://usa-visa.herokuapp.com/run-job?email=";
 const cronJobApiBaseUrl = "https://api.cron-job.org/";
 
 // express server
@@ -53,7 +52,7 @@ app.post("/signup", async (req, res) => {
         },
         json: {
           job: {
-            url: `${runJobUrl}${email}`,
+            url: `${process.env.RUN_JOB_URL}?email=${email}`,
             title: `USA visa date for ${email}`,
             enabled: "true",
             saveResponses: "true",
@@ -226,38 +225,38 @@ async function runJob(res, user) {
       });
     }
 
-    toronto.map((date) => {
-      if (!(new Date(date) < desiredDate)) {
+    toronto.map((tempDate) => {
+      if (!(new Date(tempDate) < desiredDate)) {
         toronto = [];
       }
     });
-    vancouver.map((date) => {
-      if (!(new Date(date) < desiredDate)) {
+    vancouver.map((tempDate) => {
+      if (!(new Date(tempDate) < desiredDate)) {
         vancouver = [];
       }
     });
-    quebec.map((date) => {
-      if (!(new Date(date) < desiredDate)) {
+    quebec.map((tempDate) => {
+      if (!(new Date(tempDate) < desiredDate)) {
         quebec = [];
       }
     });
-    ottawa.map((date) => {
-      if (!(new Date(date) < desiredDate)) {
+    ottawa.map((tempDate) => {
+      if (!(new Date(tempDate) < desiredDate)) {
         ottawa = [];
       }
     });
-    montreal.map((date) => {
-      if (!(new Date(date) < desiredDate)) {
+    montreal.map((tempDate) => {
+      if (!(new Date(tempDate) < desiredDate)) {
         montreal = [];
       }
     });
-    halifax.map((date) => {
-      if (!(new Date(date) < desiredDate)) {
+    halifax.map((tempDate) => {
+      if (!(new Date(tempDate) < desiredDate)) {
         halifax = [];
       }
     });
-    calgary.map((date) => {
-      if (!(new Date(date) < desiredDate)) {
+    calgary.map((tempDate) => {
+      if (!(new Date(tempDate) < desiredDate)) {
         calgary = [];
       }
     });
