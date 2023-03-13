@@ -8,15 +8,20 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const User = require("./models/user");
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error: "));
-db.once("open", function () {
-  console.log("Connected successfully");
-});
+try {
+  mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = mongoose.connection;
+  db.on("error", console.error.bind(console, "MongoDB connection error: "));
+  db.once("open", function () {
+    console.log("Connected successfully");
+  });
+} catch (error) {
+  console.error(`MongoDB connection error: ${error}`);
+  throw error;
+}
 
 const transporter = nodemailer.createTransport(
   `smtps://${process.env.NODEMAILER_USER}:${process.env.NODEMAILER_PASSWORD}@${process.env.NODEMAILER_HOST}`,
@@ -160,7 +165,7 @@ async function runJob(res, user) {
     const desiredDate = new Date(date);
 
     if (isTomorrow(desiredDate)) {
-      console.log("desired date is tomorrow");
+      console.log("LOG: desired date is tomorrow");
       const messageOptions = {
         from: "arpitdalalm@gmail.com",
         to: email,
@@ -175,7 +180,7 @@ async function runJob(res, user) {
     }
 
     if (isInThePast(desiredDate)) {
-      console.log("desired date is gone");
+      console.log("LOG: desired date is gone");
       const messageOptions = {
         from: "arpitdalalm@gmail.com",
         to: email,
@@ -201,7 +206,7 @@ async function runJob(res, user) {
               },
             },
             async (err, _, body) => {
-              console.log("request sent");
+              console.log(`LOG: delete request sent`);
               if (err) {
                 console.log("error", err);
                 const messageOptions = {
@@ -217,7 +222,7 @@ async function runJob(res, user) {
                 });
               }
               if (!err) {
-                console.log(body);
+                console.log("LOG: Delete request successful", body);
               }
             },
           );
@@ -407,134 +412,141 @@ function sendNotification(message) {
 }
 
 async function getAvailableDates(username, password) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
-  const page = await browser.newPage();
-  await page.goto("https://ais.usvisa-info.com/en-ca/niv/users/sign_in");
-  await page.waitForSelector("#user_email");
-  await page.waitForSelector("#user_password");
-  await page.waitForSelector("#policy_confirmed");
-  await page.type("#user_email", username);
-  await page.type("#user_password", password);
-  await page.evaluate(() => {
-    document.querySelector("#policy_confirmed").click();
-  });
-  await page.evaluate(() => {
-    document.querySelector("input[type='submit']").click();
-  });
-  await page.waitForSelector("[role='menuitem'] > .button.primary.small");
-  await page.evaluate(() => {
-    document.querySelector("[role='menuitem'] > .button.primary.small").click();
-  });
-  await page.waitForSelector("#main");
-  const url = page.url();
-  const id = url.replace(/\D/g, "");
-
-  // Calgary
-  await page.goto(
-    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/89.json?appointments[expedite]=false`,
-  );
-  await page.waitForSelector("body > pre");
-  const calData = await page
-    .$eval("body > pre", (e) => e.innerText)
-    .catch((err) => {
-      console.log(err);
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
-  const calJson = JSON.parse(calData);
-  let calgary = calJson.map((item) => item.date);
 
-  // Halifax
-  await page.goto(
-    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/90.json?appointments[expedite]=false`,
-  );
-  await page.waitForSelector("body > pre");
-  const halData = await page
-    .$eval("body > pre", (e) => e.innerText)
-    .catch((err) => {
-      console.log(err);
+    const page = await browser.newPage();
+    await page.goto("https://ais.usvisa-info.com/en-ca/niv/users/sign_in");
+    await page.waitForSelector("#user_email");
+    await page.waitForSelector("#user_password");
+    await page.waitForSelector("#policy_confirmed");
+    await page.type("#user_email", username);
+    await page.type("#user_password", password);
+    await page.evaluate(() => {
+      document.querySelector("#policy_confirmed").click();
     });
-  const halJson = JSON.parse(halData);
-  let halifax = halJson.map((item) => item.date);
-
-  // Montreal
-  await page.goto(
-    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/91.json?appointments[expedite]=false`,
-  );
-  await page.waitForSelector("body > pre");
-  const monData = await page
-    .$eval("body > pre", (e) => e.innerText)
-    .catch((err) => {
-      console.log(err);
+    await page.evaluate(() => {
+      document.querySelector("input[type='submit']").click();
     });
-  const monJson = JSON.parse(monData);
-  let montreal = monJson.map((item) => item.date);
-
-  // Ottawa
-  await page.goto(
-    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/92.json?appointments[expedite]=false`,
-  );
-  await page.waitForSelector("body > pre");
-  const ottData = await page
-    .$eval("body > pre", (e) => e.innerText)
-    .catch((err) => {
-      console.log(err);
+    await page.waitForSelector("[role='menuitem'] > .button.primary.small");
+    await page.evaluate(() => {
+      document
+        .querySelector("[role='menuitem'] > .button.primary.small")
+        .click();
     });
-  const ottJson = JSON.parse(ottData);
-  let ottawa = ottJson.map((item) => item.date);
+    await page.waitForSelector("#main");
+    const url = page.url();
+    const id = url.replace(/\D/g, "");
 
-  // Quebec
-  await page.goto(
-    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/93.json?appointments[expedite]=false`,
-  );
-  await page.waitForSelector("body > pre");
-  const queData = await page
-    .$eval("body > pre", (e) => e.innerText)
-    .catch((err) => {
-      console.log(err);
-    });
-  const queJson = JSON.parse(queData);
-  let quebec = queJson.map((item) => item.date);
+    // Calgary
+    await page.goto(
+      `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/89.json?appointments[expedite]=false`,
+    );
+    await page.waitForSelector("body > pre");
+    const calData = await page
+      .$eval("body > pre", (e) => e.innerText)
+      .catch((err) => {
+        console.log(err);
+      });
+    const calJson = JSON.parse(calData);
+    let calgary = calJson.map((item) => item.date);
 
-  // Toronto
-  await page.goto(
-    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/94.json?appointments[expedite]=false`,
-  );
-  await page.waitForSelector("body > pre");
-  const torData = await page
-    .$eval("body > pre", (e) => e.innerText)
-    .catch((err) => {
-      console.log(err);
-    });
-  const torJson = JSON.parse(torData);
-  let toronto = torJson.map((item) => item.date);
+    // Halifax
+    await page.goto(
+      `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/90.json?appointments[expedite]=false`,
+    );
+    await page.waitForSelector("body > pre");
+    const halData = await page
+      .$eval("body > pre", (e) => e.innerText)
+      .catch((err) => {
+        console.log(err);
+      });
+    const halJson = JSON.parse(halData);
+    let halifax = halJson.map((item) => item.date);
 
-  // Vancouver
-  await page.goto(
-    `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/95.json?appointments[expedite]=false`,
-  );
-  await page.waitForSelector("body > pre");
-  const vanData = await page
-    .$eval("body > pre", (e) => e.innerText)
-    .catch((err) => {
-      console.log(err);
-    });
-  const vanJson = JSON.parse(vanData);
-  let vancouver = vanJson.map((item) => item.date);
+    // Montreal
+    await page.goto(
+      `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/91.json?appointments[expedite]=false`,
+    );
+    await page.waitForSelector("body > pre");
+    const monData = await page
+      .$eval("body > pre", (e) => e.innerText)
+      .catch((err) => {
+        console.log(err);
+      });
+    const monJson = JSON.parse(monData);
+    let montreal = monJson.map((item) => item.date);
 
-  await browser.close();
+    // Ottawa
+    await page.goto(
+      `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/92.json?appointments[expedite]=false`,
+    );
+    await page.waitForSelector("body > pre");
+    const ottData = await page
+      .$eval("body > pre", (e) => e.innerText)
+      .catch((err) => {
+        console.log(err);
+      });
+    const ottJson = JSON.parse(ottData);
+    let ottawa = ottJson.map((item) => item.date);
 
-  return {
-    calgary,
-    halifax,
-    montreal,
-    ottawa,
-    quebec,
-    toronto,
-    vancouver,
-  };
+    // Quebec
+    await page.goto(
+      `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/93.json?appointments[expedite]=false`,
+    );
+    await page.waitForSelector("body > pre");
+    const queData = await page
+      .$eval("body > pre", (e) => e.innerText)
+      .catch((err) => {
+        console.log(err);
+      });
+    const queJson = JSON.parse(queData);
+    let quebec = queJson.map((item) => item.date);
+
+    // Toronto
+    await page.goto(
+      `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/94.json?appointments[expedite]=false`,
+    );
+    await page.waitForSelector("body > pre");
+    const torData = await page
+      .$eval("body > pre", (e) => e.innerText)
+      .catch((err) => {
+        console.log(err);
+      });
+    const torJson = JSON.parse(torData);
+    let toronto = torJson.map((item) => item.date);
+
+    // Vancouver
+    await page.goto(
+      `https://ais.usvisa-info.com/en-ca/niv/schedule/${id}/appointment/days/95.json?appointments[expedite]=false`,
+    );
+    await page.waitForSelector("body > pre");
+    const vanData = await page
+      .$eval("body > pre", (e) => e.innerText)
+      .catch((err) => {
+        console.log(err);
+      });
+    const vanJson = JSON.parse(vanData);
+    let vancouver = vanJson.map((item) => item.date);
+
+    await browser.close();
+
+    return {
+      calgary,
+      halifax,
+      montreal,
+      ottawa,
+      quebec,
+      toronto,
+      vancouver,
+    };
+  } catch (error) {
+    console.error(`Puppeteer error: ${error}`);
+    throw error;
+  }
 }
 
 function getTomorrowDate() {
