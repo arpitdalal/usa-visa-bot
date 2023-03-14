@@ -35,9 +35,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+app.get("/profile", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "profile.html"));
+});
+
 app.post("/signup", async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, password, username, date } = req.body;
+
+    if (!email || !password || !username || !date) {
+      return res.status(400).send({
+        message: "Error: All the fields are necessary",
+      });
+    }
+    if (isInThePast(date)) {
+      return res.status(400).send({
+        message: "Error: Please select a future desired date",
+      });
+    }
+
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).send({
@@ -79,15 +95,15 @@ app.post("/signup", async (req, res) => {
       },
       async (err, _, body) => {
         if (err) {
-          res.status(500).send({
-            message: "Signup failed",
+          return res.status(500).send({
+            message: "Error: Signup failed",
           });
         } else {
           const { jobId } = body;
           const newUser = new User({ ...req.body, jobId });
           await newUser.save();
 
-          res.status(200).send({
+          return res.status(200).send({
             message: "Signup successful",
           });
         }
@@ -95,20 +111,15 @@ app.post("/signup", async (req, res) => {
     );
   } catch (error) {
     console.log(error);
-    res.status(500).send({
-      message: "Signup failed",
+    return res.status(500).send({
+      message: "Error: Signup failed",
     });
   }
 });
 
-app.get("/profile", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "profile.html"));
-});
-
 app.post("/login", (req, res) => {
-  const { username, email, password } = req.body;
-  User.findOne({ email, username, password }, (err, user) => {
-    console.log({ username, email, password });
+  const { username, password } = req.body;
+  User.findOne({ username, password }, (err, user) => {
     if (err) {
       res.status(500).send({
         ok: false,
@@ -120,6 +131,7 @@ app.post("/login", (req, res) => {
         message: "Login failed",
       });
     } else {
+      console.log(user);
       res.status(200).send({
         ok: true,
         message: "Login successful",
@@ -162,7 +174,7 @@ async function runJob(res, user) {
     await getAvailableDates(username, password);
 
   if (date) {
-    const desiredDate = new Date(date);
+    const desiredDate = new Date(new Date(date).toLocaleString("en-US"));
 
     if (isTomorrow(desiredDate)) {
       console.log("LOG: desired date is tomorrow");
@@ -231,37 +243,51 @@ async function runJob(res, user) {
     }
 
     toronto.map((tempDate) => {
-      if (!(new Date(tempDate) < desiredDate)) {
+      if (
+        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+      ) {
         toronto = [];
       }
     });
     vancouver.map((tempDate) => {
-      if (!(new Date(tempDate) < desiredDate)) {
+      if (
+        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+      ) {
         vancouver = [];
       }
     });
     quebec.map((tempDate) => {
-      if (!(new Date(tempDate) < desiredDate)) {
+      if (
+        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+      ) {
         quebec = [];
       }
     });
     ottawa.map((tempDate) => {
-      if (!(new Date(tempDate) < desiredDate)) {
+      if (
+        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+      ) {
         ottawa = [];
       }
     });
     montreal.map((tempDate) => {
-      if (!(new Date(tempDate) < desiredDate)) {
+      if (
+        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+      ) {
         montreal = [];
       }
     });
     halifax.map((tempDate) => {
-      if (!(new Date(tempDate) < desiredDate)) {
+      if (
+        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+      ) {
         halifax = [];
       }
     });
     calgary.map((tempDate) => {
-      if (!(new Date(tempDate) < desiredDate)) {
+      if (
+        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+      ) {
         calgary = [];
       }
     });
@@ -550,27 +576,34 @@ async function getAvailableDates(username, password) {
 }
 
 function getTomorrowDate() {
-  const today = new Date();
-  let dd = today.getDate() + 1;
-  let mm = today.getMonth() + 1;
-  let yyyy = today.getFullYear();
+  const today = new Date().toLocaleString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  let dd = new Date(today).getDate() + 1;
+  let mm = new Date(today).getMonth() + 1;
+  let yyyy = new Date(today).getFullYear();
   if (dd < 10) {
     dd = "0" + dd;
   }
   if (mm < 10) {
     mm = "0" + mm;
   }
-  return yyyy + "-" + mm + "-" + dd;
+
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 function isTomorrow(date) {
-  const tomorrow = new Date();
+  const tomorrow = new Date(new Date().toLocaleString("en-US"));
   tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const desiredDate = new Date(new Date(date).toLocaleString("en-US"));
 
   // 👇️ Tomorrow's date
   console.log(tomorrow);
 
-  if (tomorrow.toDateString() === date.toDateString()) {
+  if (tomorrow.toDateString() === desiredDate.toDateString()) {
     return true;
   }
 
@@ -578,7 +611,8 @@ function isTomorrow(date) {
 }
 
 function isInTheFuture(date) {
-  const today = new Date();
+  const today = new Date(new Date().toLocaleString("en-US"));
+  const desiredDate = new Date(new Date(date).toLocaleString("en-us"));
 
   // 👇️ OPTIONAL!
   // This line sets the time of the current date to the
@@ -586,11 +620,12 @@ function isInTheFuture(date) {
   // date is at least tomorrow
   today.setHours(23, 59, 59, 998);
 
-  return date > today;
+  return desiredDate > today;
 }
 
 function isInThePast(date) {
-  const today = new Date();
+  const today = new Date(new Date().toLocaleString("en-US"));
+  const desiredDate = new Date(new Date(date).toLocaleString("en-us"));
 
   // 👇️ OPTIONAL!
   // This line sets the hour of the current date to midnight
@@ -598,7 +633,7 @@ function isInThePast(date) {
   // is at least yesterday
   today.setHours(0, 0, 0, 0);
 
-  return date < today;
+  return desiredDate < today;
 }
 
 function getRandomNumber(max, min) {
@@ -610,8 +645,8 @@ function generateMinutes() {
   let currentMinute = minute;
   let minutes = [currentMinute];
 
-  for (let i = 0; i < 11; i++) {
-    currentMinute += 5;
+  for (let i = 0; i < 3; i++) {
+    currentMinute += 15;
     minutes.push(currentMinute);
   }
 

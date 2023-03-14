@@ -16,6 +16,9 @@
 
     <!-- Custom CSS -->
     <link href="style.css" rel="stylesheet" />
+
+    <!-- Custom Script -->
+    <script src="index.js"></script>
   </head>
 
   <body
@@ -27,26 +30,20 @@
 
     <main class="mx-auto para mt-5">
       <section>
-        <h2 class="text-center">How it works?</h2>
+        <h2 class="text-center">How this works?</h2>
         <div class="mt-3">
           <p>
-            Enter your <strong>login credentials (email and password)</strong> in
-            the first 2 fields in the form below along with the
-            <strong>email address</strong> you want to get notifications on in the
-            3rd field.
+            Enter your <strong>login credentials (email and password)</strong> in the first 2 fields in the form below along with the <strong>email address</strong> you want to get notifications on in the 3rd field.
           </p>
           <p>
-            Every <strong>5 minutes</strong> you will receive an email with the
-            available visa dates at available locations in Canada.
+            Add a <strong>desired date</strong> in the fourth field, you'll only get an email if a visa date is available before your desired date. For example, <strong>if today is January 1, 2023 and your desired date is July 15, 2023 then you'll only receive an email if there's a visa date available before July 15, 2023</strong>.
           </p>
           <p>
-            Optionally you can <strong>select a desired date</strong> and if there is a
-            visa date available before that, you will receive an email.
+            Every <strong>15 minutes</strong> this bot will look for dates and email you with the available dates at available locations.
           </p>
           <p>
             <strong>
-              Note: If you select the desired date, you will not receive any
-              emails if there is no visa dates available before the desired date. Your notification service will be cancelled once the desired date has passed. To avoid that, you can select a future date as your desired date by going to <a href="/profile">your profile</a> or removing the desired date completely to get notifications for every date available.
+              Note: Your notification service will be cancelled once the desired date has passed. To avoid that, you can select a future date as your desired date by going to <a href="/profile">your profile</a>
             </strong>
           </p>
         </div>
@@ -138,12 +135,12 @@
                 id="date"
                 placeholder="Enter date"
                 aria-describedby="dateHelp"
+                required
               />
-              <label for="date">Desired date</label>
+              <label for="date">Desired date <span class="text-danger">*</span></label>
             </div>
             <div id="dateHelp" class="form-text">
-              Optionally select a date and if we find a visa date available before
-              that, you will receive an email.
+              Select a date and id a visa date is available before that, you will receive an email.
             </div>
           </div>
           <div class="mb-3">
@@ -167,29 +164,21 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modalLabel">How it works?</h5>
+            <h5 class="modal-title" id="modalLabel">How this works?</h5>
           </div>
           <div class="modal-body">
             <p>
-              Enter your <strong>login credentials (email and password)</strong> in
-              the first 2 fields in the form along with the
-              <strong>email address</strong> you want to get notifications on in the
-              3rd field.
+              Enter your <strong>login credentials (email and password)</strong> in the first 2 fields in the form below along with the <strong>email address</strong> you want to get notifications on in the 3rd field.
             </p>
             <p>
-              Every <strong>5 minutes</strong> you will receive an email with the
-              available visa dates at available locations in Canada.
+              Add a <strong>desired date</strong> in the fourth field, you'll only get an email if a visa date is available before your desired date. For example, <strong>if today is January 1, 2023 and your desired date is July 15, 2023 then you'll only receive an email if there's a visa date available before July 15, 2023</strong>.
             </p>
             <p>
-              Optionally you can <strong>select a desired date</strong> and if there is a
-              visa date available before that, you will receive an email.
+              Every <strong>15 minutes</strong> this bot will look for dates and email you with the available dates at available locations.
             </p>
             <p>
               <strong>
-                Note: If you select the desired date, you will not receive any
-                emails if there is no visa dates available before the desired date. Your notification service will be cancelled once the desired date has passed. To avoid that, you can select a future date as your desired date by going to <a href="/profile">your profile</a> or removing the desired date completely to get notifications for every date available.
-              </strong>
-            </p>
+                Note: Your notification service will be cancelled once the desired date has passed. To avoid that, you can select a future date as your desired date by going to <a href="/profile">your profile</a>
           </div>
           <div class="modal-footer">
             <button type="button" id="understand-btn" class="btn btn-primary">I understand</button>
@@ -197,6 +186,7 @@
         </div>
       </div>
     </div>
+    <div id="modal-backdrop" class="modal-backdrop fade d-none"></div>
 
     <!-- Bootstrap Script -->
     <script
@@ -209,7 +199,5 @@
       integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
       crossorigin="anonymous"
     ></script>
-    <!-- Custom Script -->
-    <script src="index.js"></script>
   </body>
 </html>

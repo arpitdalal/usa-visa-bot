@@ -21,13 +21,68 @@
   <body
     class="container my-5"
   >
-    <h1 class="text-center">
-      Your Profile
-    </h1>
-
     <main class="mx-auto para mt-5">
-      <h2 class="text-center">Under construction 🏗👷‍♂️</h2>
-      <p>Meanwhile, to edit your profile please contact me at <a href="mailto:arpitdalalm@gmail.com">arpitdalalm@gmail.com</a> or <a href="tel:+12265043991">(226) 504-3991</a></p>
+      <!-- <h2 class="text-center">Under construction 🏗👷‍♂️</h2>
+      <p>Meanwhile, to edit your profile please contact me at <a href="mailto:arpitdalalm@gmail.com">arpitdalalm@gmail.com</a></p> -->
+      <section>
+        <h1 class="text-center mb-4">Login</h2>
+        <form id="login-form" class="mt-3">
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="email"
+                class="form-control"
+                id="username"
+                aria-describedby="usernameHelp"
+                placeholder="Enter email"
+                required
+              />
+              <label for="floatingInput">Email address <span class="text-danger">*</span></label>
+            </div>
+            <div id="usernameHelp" class="form-text">
+              The email address you have registered with on
+              <a
+                href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-primary"
+                >USA visa website</a
+              >.
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                aria-describedby="passwordHelp"
+                placeholder="Enter password"
+                required
+              />
+              <label for="password">
+                Password <span class="text-danger">*</span>
+              </label>
+            </div>
+            <button type="button" id="show-password" class="link-primary mb-0 bg-transparent border-0">Show password</button>
+            <div id="passwordHelp" class="form-text">
+              The password used to log into
+              <a
+                href="https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-primary"
+                >USA visa website</a
+              >
+              with the above email address.
+            </div>
+          </div>
+          <div class="mb-3">
+            <button type="submit" id="submit-btn" class="btn btn-primary">Login</button>
+            <a href="/" class="btn btn-secondary">Signup</a>
+          </div>
+        </form>
+      </section>
     </main>
 
     <!-- Bootstrap Script -->
@@ -42,7 +97,7 @@
       crossorigin="anonymous"
     ></script>
     <!-- Custom Script -->
-    <script src="script.js"></script>
+    <script src="profile.js"></script>
   </body>
 </body>
 </html>

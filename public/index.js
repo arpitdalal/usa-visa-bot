@@ -1,34 +1,37 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("#signup-form");
   const submitBtn = document.querySelector("#submit-btn");
   const showPassword = document.querySelector("#show-password");
   const modal = document.querySelector("#modal");
+  const modalBackdrop = document.querySelector("#modal-backdrop");
   const body = document.querySelector("body");
   const date = form.querySelector("#date");
 
-  if (!localStorage.getItem("understand")) {
-    modal.classList.add("show");
-    modal.style = "display: block";
-    body.innerHTML +=
-      '<div id="modal-backdrop" class="modal-backdrop fade show"></div>';
-    body.classList.add("modal-open");
-    body.style = "overflow: hidden; padding-right: 12px";
+  modal.classList.add("show");
+  modal.style = "display: block";
+  modalBackdrop.classList.remove("d-none");
+  modalBackdrop.classList.add("show");
+  body.classList.add("modal-open");
+  body.style = "overflow: hidden; padding-right: 12px";
 
-    const understandBtn = document.querySelector("#understand-btn");
-    understandBtn.addEventListener("click", () => {
-      document.querySelector("#modal").classList.remove("show");
-      document.querySelector("#modal").style = "display: none;";
-      document.querySelector("#modal-backdrop").remove();
-      body.classList.remove("modal-open");
-      body.style = "";
-      localStorage.setItem("understand", "true");
-    });
-  }
+  const understandBtn = document.querySelector("#understand-btn");
+  understandBtn.addEventListener("click", () => {
+    document.querySelector("#modal").classList.remove("show");
+    document.querySelector("#modal").style = "display: none;";
+    modalBackdrop.classList.remove("show");
+    modalBackdrop.classList.add("d-none");
+    body.classList.remove("modal-open");
+    body.style = "";
+  });
 
-  const today = new Date();
-  let dd = today.getDate() + 1;
-  let mm = today.getMonth() + 1;
-  let yyyy = today.getFullYear();
+  const today = new Date().toLocaleString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  let dd = new Date(today).getDate() + 1;
+  let mm = new Date(today).getMonth() + 1;
+  let yyyy = new Date(today).getFullYear();
   if (dd < 10) {
     dd = "0" + dd;
   }
@@ -36,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     mm = "0" + mm;
   }
 
-  const tomorrow = yyyy + "-" + mm + "-" + dd;
+  const tomorrow = `${yyyy}-${mm}-${dd}`;
   date.setAttribute("min", tomorrow);
 
   showPassword.addEventListener("click", () => {
@@ -50,17 +53,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", signup);
+
+  async function signup(e) {
     e.preventDefault();
     if (
       confirm(
-        "Please check the login email and password for USA website is correct",
+        "Please confirm if the login email and password for USA website are correct",
       )
     ) {
-      if (date.value && date.value < tomorrow) {
-        alert("Your desired date is in the past. Please select a future date");
-        return;
-      }
+      // if (date.value < tomorrow) {
+      //   alert("Error: Please select a future desired date");
+      //   return;
+      // }
 
       submitBtn.disabled = true;
       submitBtn.innerText = "Submitting...";
@@ -68,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
         username: form.querySelector("#username").value,
         password: form.querySelector("#password").value,
         email: form.querySelector("#email").value,
-        date: date.value || null,
+        date: date.value,
       };
 
       fetch("/signup", {
@@ -78,7 +83,13 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify(formData),
       })
-        .then((res) => res.json())
+        .then(async (res) => {
+          const data = await res.json();
+          if (res.ok) {
+            return data;
+          }
+          alert(data.message);
+        })
         .then((data) => {
           alert(data.message);
         })
@@ -90,5 +101,5 @@ document.addEventListener("DOMContentLoaded", function () {
           submitBtn.innerText = "Submit";
         });
     }
-  });
+  }
 });
