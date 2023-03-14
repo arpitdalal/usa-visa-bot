@@ -1,7 +1,30 @@
+if (!getToken()) {
+  window.location.replace("login");
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  const form = document.querySelector("#login-form");
-  const submitBtn = document.querySelector("#submit-btn");
+  const nameDiv = document.querySelector("#name");
+  const usernameInput = document.querySelector("#username");
+  const passwordInput = document.querySelector("#password");
   const showPassword = document.querySelector("#show-password");
+  const emailInput = document.querySelector("#email");
+  const dateInput = document.querySelector("#date");
+  const logoutBtn = document.querySelector("#logout");
+
+  const token = getToken();
+  const user = JSON.parse(token);
+  nameDiv.innerHTML = `Hello <em>${user.username}</em>`;
+  usernameInput.value = user.username;
+  passwordInput.value = user.password;
+  emailInput.value = user.email;
+  dateInput.value = user.date;
+
+  logoutBtn.addEventListener("click", () => {
+    const d = new Date();
+    d.setTime(d.getTime() - 2 * 24 * 60 * 60 * 1000);
+    document.cookie = `jsnId=${token}; SameSite=Lax; Secure; expires=${d.toUTCString()}`;
+    location.reload();
+  });
 
   showPassword.addEventListener("click", () => {
     const password = document.querySelector("#password");
@@ -13,41 +36,14 @@ document.addEventListener("DOMContentLoaded", function () {
       showPassword.innerText = "Show password";
     }
   });
-
-  form.addEventListener("submit", login);
-  async function login(e) {
-    e.preventDefault();
-
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Logging in...";
-    const formData = {
-      username: form.querySelector("#username").value,
-      password: form.querySelector("#password").value,
-    };
-
-    fetch("/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        if (res.ok) {
-          return data;
-        }
-        alert(data.message);
-      })
-      .then((data) => {
-        alert(data.message);
-      })
-      .catch(() => {
-        alert("Error logging in!");
-      })
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Login";
-      });
-  }
 });
+
+function getToken() {
+  var cookies = document.cookie;
+  var parts = cookies.split("jsnId" + "=");
+  var cookieValue = "";
+  if (parts.length == 2) {
+    cookieValue = parts.pop().split(";").shift();
+  }
+  return cookieValue;
+}

@@ -33,10 +33,13 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/profile", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "profile.html"));
+});
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
 app.post("/signup", async (req, res) => {
@@ -131,10 +134,14 @@ app.post("/login", (req, res) => {
         message: "Login failed",
       });
     } else {
-      console.log(user);
       res.status(200).send({
         ok: true,
-        message: "Login successful",
+        message: JSON.stringify({
+          username: user.username,
+          password: user.password,
+          email: user.email,
+          date: user.date,
+        }),
       });
     }
   });
