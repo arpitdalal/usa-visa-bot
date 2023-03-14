@@ -168,7 +168,7 @@ app.get("/run-job", async (req, res) => {
     res.status(500).send({
       message: "Server Error: Something went wrong",
     });
-    throw error;
+    process.exit(1);
   }
 });
 const PORT = process.env.PORT || 3000;
