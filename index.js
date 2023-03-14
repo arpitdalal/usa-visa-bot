@@ -141,21 +141,28 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/run-job", async (req, res) => {
-  const email = req.query.email;
-  if (!email) {
-    return res.status(400).send({
-      message: "Error: Email is required",
-    });
-  }
+  try {
+    const email = req.query.email;
+    if (!email) {
+      return res.status(400).send({
+        message: "Error: Email is required",
+      });
+    }
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).send({
-      message: "Error: User with this email does not exist",
-    });
-  }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send({
+        message: "Error: User with this email does not exist",
+      });
+    }
 
-  await runJob(res, user);
+    return await runJob(res, user);
+  } catch (error) {
+    res.status(500).send({
+      message: "Server Error: Something went wrong",
+    });
+    throw error;
+  }
 });
 const PORT = process.env.PORT || 3000;
 app.set("port", PORT);
@@ -169,172 +176,175 @@ app
   });
 
 async function runJob(res, user) {
-  const { email, username, password, date, jobId } = user;
-  let { calgary, halifax, montreal, ottawa, quebec, toronto, vancouver } =
-    await getAvailableDates(username, password);
+  try {
+    const { email, username, password, date, jobId } = user;
+    let { calgary, halifax, montreal, ottawa, quebec, toronto, vancouver } =
+      await getAvailableDates(username, password);
 
-  if (date) {
-    const desiredDate = new Date(new Date(date).toLocaleString("en-US"));
+    if (date) {
+      const desiredDate = new Date(new Date(date).toLocaleString("en-US"));
 
-    // if (isTomorrow(desiredDate)) {
-    //   console.log("LOG: desired date is tomorrow");
-    //   const messageOptions = {
-    //     from: "arpitdalalm@gmail.com",
-    //     to: email,
-    //     subject: "Notice from USA visa notification service",
-    //     html: `<h3><strong>Note: Your desired date is ${date}, which means the notification service will end from tomorrow.</strong></h3><br><br><strong>What now?<br>Don't worry, you can edit your current profile to remove the date to get all available dates or change the current desired date to a future date.</strong><br><br><p>To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
-    //   };
-    //   transporter.sendMail(messageOptions, (err) => {
-    //     if (err) {
-    //       console.log(err);
-    //     }
-    //   });
-    // }
+      // if (isTomorrow(desiredDate)) {
+      //   console.log("LOG: desired date is tomorrow");
+      //   const messageOptions = {
+      //     from: "arpitdalalm@gmail.com",
+      //     to: email,
+      //     subject: "Notice from USA visa notification service",
+      //     html: `<h3><strong>Note: Your desired date is ${date}, which means the notification service will end from tomorrow.</strong></h3><br><br><strong>What now?<br>Don't worry, you can edit your current profile to remove the date to get all available dates or change the current desired date to a future date.</strong><br><br><p>To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
+      //   };
+      //   transporter.sendMail(messageOptions, (err) => {
+      //     if (err) {
+      //       console.log(err);
+      //     }
+      //   });
+      // }
 
-    // if (isInThePast(desiredDate)) {
-    //   console.log("LOG: desired date is gone");
-    //   const messageOptions = {
-    //     from: "arpitdalalm@gmail.com",
-    //     to: email,
-    //     subject: "Notice from USA visa notification service",
-    //     html: `<h3><strong>Note: notification service has been cancelled since your desired date is in the past.</strong></h3><br><br><p>You can edit the desired date to a future date or remove it completely to get notification for every date available. To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
-    //   };
-    //   transporter.sendMail(messageOptions, (err) => {
-    //     if (err) {
-    //       console.log(err);
-    //     } else {
-    //       request(
-    //         {
-    //           uri: `${cronJobApiBaseUrl}jobs/${jobId}`,
-    //           method: "PATCH",
-    //           headers: {
-    //             "Content-Type": "application/json",
-    //             Authorization: `Bearer ${process.env.CRON_JOB_API_KEY}`,
-    //           },
-    //           json: {
-    //             job: {
-    //               enabled: false,
-    //             },
-    //           },
-    //         },
-    //         async (err, _, body) => {
-    //           console.log(`LOG: delete request sent`);
-    //           if (err) {
-    //             console.log("error", err);
-    //             const messageOptions = {
-    //               from: "arpitdalalm@gmail.com",
-    //               to: "arpitdalalm@gmail",
-    //               subject: "ERROR: USA visa notification service",
-    //               html: `Deleting ${jobId} failed. Error: ${err}`,
-    //             };
-    //             transporter.sendMail(messageOptions, (err) => {
-    //               if (err) {
-    //                 console.log(`Error sending email: ${err}`);
-    //               }
-    //             });
-    //           }
-    //           if (!err) {
-    //             console.log("LOG: Delete request successful", body);
-    //           }
-    //         },
-    //       );
-    //     }
-    //   });
-    // }
+      // if (isInThePast(desiredDate)) {
+      //   console.log("LOG: desired date is gone");
+      //   const messageOptions = {
+      //     from: "arpitdalalm@gmail.com",
+      //     to: email,
+      //     subject: "Notice from USA visa notification service",
+      //     html: `<h3><strong>Note: notification service has been cancelled since your desired date is in the past.</strong></h3><br><br><p>You can edit the desired date to a future date or remove it completely to get notification for every date available. To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
+      //   };
+      //   transporter.sendMail(messageOptions, (err) => {
+      //     if (err) {
+      //       console.log(err);
+      //     } else {
+      //       request(
+      //         {
+      //           uri: `${cronJobApiBaseUrl}jobs/${jobId}`,
+      //           method: "PATCH",
+      //           headers: {
+      //             "Content-Type": "application/json",
+      //             Authorization: `Bearer ${process.env.CRON_JOB_API_KEY}`,
+      //           },
+      //           json: {
+      //             job: {
+      //               enabled: false,
+      //             },
+      //           },
+      //         },
+      //         async (err, _, body) => {
+      //           console.log(`LOG: delete request sent`);
+      //           if (err) {
+      //             console.log("error", err);
+      //             const messageOptions = {
+      //               from: "arpitdalalm@gmail.com",
+      //               to: "arpitdalalm@gmail",
+      //               subject: "ERROR: USA visa notification service",
+      //               html: `Deleting ${jobId} failed. Error: ${err}`,
+      //             };
+      //             transporter.sendMail(messageOptions, (err) => {
+      //               if (err) {
+      //                 console.log(`Error sending email: ${err}`);
+      //               }
+      //             });
+      //           }
+      //           if (!err) {
+      //             console.log("LOG: Delete request successful", body);
+      //           }
+      //         },
+      //       );
+      //     }
+      //   });
+      // }
 
-    toronto.map((tempDate) => {
-      if (
-        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
-      ) {
-        toronto = [];
-      }
-    });
-    vancouver.map((tempDate) => {
-      if (
-        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
-      ) {
-        vancouver = [];
-      }
-    });
-    quebec.map((tempDate) => {
-      if (
-        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
-      ) {
-        quebec = [];
-      }
-    });
-    ottawa.map((tempDate) => {
-      if (
-        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
-      ) {
-        ottawa = [];
-      }
-    });
-    montreal.map((tempDate) => {
-      if (
-        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
-      ) {
-        montreal = [];
-      }
-    });
-    halifax.map((tempDate) => {
-      if (
-        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
-      ) {
-        halifax = [];
-      }
-    });
-    calgary.map((tempDate) => {
-      if (
-        !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
-      ) {
-        calgary = [];
-      }
-    });
-  }
-
-  if (
-    !toronto.length > 0 &&
-    !vancouver.length > 0 &&
-    !ottawa.length > 0 &&
-    !quebec.length > 0 &&
-    !montreal.length > 0 &&
-    !halifax.length > 0 &&
-    !calgary.length > 0
-  ) {
-    res.status(200).send("No dates available");
-    return;
-  }
-
-  const message = createMessage(
-    toronto,
-    calgary,
-    halifax,
-    montreal,
-    ottawa,
-    quebec,
-    vancouver,
-  );
-
-  return await sendEmail(message, email)
-    .then(() => {
-      res.status(200).send("Notification sent");
-    })
-    .catch((error) => {
-      // SEND AN EMAIL ABOUT THE ERROR TO ARPITDALALM@GMAIL.COM
-      const messageOptions = {
-        from: "arpitdalalm@gmail.com",
-        to: "arpitdalalm@gmail.com",
-        subject: "ERROR MESSAGE FROM US VISA BOT",
-        text: `Couldn't send the the notification to the channel! ERROR: ${error}!`,
-      };
-      transporter.sendMail(messageOptions, (err) => {
-        if (err) {
-          console.log(`Email error: ${err}`);
+      toronto.map((tempDate) => {
+        if (
+          !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+        ) {
+          toronto = [];
         }
       });
-      res.status(400).send(`Error: ${error}`);
-    });
+      vancouver.map((tempDate) => {
+        if (
+          !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+        ) {
+          vancouver = [];
+        }
+      });
+      quebec.map((tempDate) => {
+        if (
+          !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+        ) {
+          quebec = [];
+        }
+      });
+      ottawa.map((tempDate) => {
+        if (
+          !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+        ) {
+          ottawa = [];
+        }
+      });
+      montreal.map((tempDate) => {
+        if (
+          !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+        ) {
+          montreal = [];
+        }
+      });
+      halifax.map((tempDate) => {
+        if (
+          !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+        ) {
+          halifax = [];
+        }
+      });
+      calgary.map((tempDate) => {
+        if (
+          !(new Date(new Date(tempDate).toLocaleString("en-US")) < desiredDate)
+        ) {
+          calgary = [];
+        }
+      });
+    }
+
+    if (
+      !toronto.length > 0 &&
+      !vancouver.length > 0 &&
+      !ottawa.length > 0 &&
+      !quebec.length > 0 &&
+      !montreal.length > 0 &&
+      !halifax.length > 0 &&
+      !calgary.length > 0
+    ) {
+      return res.status(200).send("No dates available");
+    }
+
+    const message = createMessage(
+      toronto,
+      calgary,
+      halifax,
+      montreal,
+      ottawa,
+      quebec,
+      vancouver,
+    );
+
+    return await sendEmail(message, email)
+      .then(() => {
+        return res.status(200).send("Notification sent");
+      })
+      .catch((error) => {
+        // SEND AN EMAIL ABOUT THE ERROR TO ARPITDALALM@GMAIL.COM
+        const messageOptions = {
+          from: "arpitdalalm@gmail.com",
+          to: "arpitdalalm@gmail.com",
+          subject: "ERROR MESSAGE FROM US VISA BOT",
+          text: `Couldn't send the the notification to the channel! ERROR: ${error}!`,
+        };
+        transporter.sendMail(messageOptions, (err) => {
+          if (err) {
+            console.log(`Email error: ${err}`);
+          }
+        });
+        return res.status(400).send(`Error: ${error}`);
+      });
+  } catch (error) {
+    throw error;
+  }
 }
 
 function createMessage(
