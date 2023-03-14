@@ -176,71 +176,71 @@ async function runJob(res, user) {
   if (date) {
     const desiredDate = new Date(new Date(date).toLocaleString("en-US"));
 
-    if (isTomorrow(desiredDate)) {
-      console.log("LOG: desired date is tomorrow");
-      const messageOptions = {
-        from: "arpitdalalm@gmail.com",
-        to: email,
-        subject: "Notice from USA visa notification service",
-        html: `<h3><strong>Note: Your desired date is ${date}, which means the notification service will end from tomorrow.</strong></h3><br><br><strong>What now?<br>Don't worry, you can edit your current profile to remove the date to get all available dates or change the current desired date to a future date.</strong><br><br><p>To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
-      };
-      transporter.sendMail(messageOptions, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
+    // if (isTomorrow(desiredDate)) {
+    //   console.log("LOG: desired date is tomorrow");
+    //   const messageOptions = {
+    //     from: "arpitdalalm@gmail.com",
+    //     to: email,
+    //     subject: "Notice from USA visa notification service",
+    //     html: `<h3><strong>Note: Your desired date is ${date}, which means the notification service will end from tomorrow.</strong></h3><br><br><strong>What now?<br>Don't worry, you can edit your current profile to remove the date to get all available dates or change the current desired date to a future date.</strong><br><br><p>To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
+    //   };
+    //   transporter.sendMail(messageOptions, (err) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+    //   });
+    // }
 
-    if (isInThePast(desiredDate)) {
-      console.log("LOG: desired date is gone");
-      const messageOptions = {
-        from: "arpitdalalm@gmail.com",
-        to: email,
-        subject: "Notice from USA visa notification service",
-        html: `<h3><strong>Note: notification service has been cancelled since your desired date is in the past.</strong></h3><br><br><p>You can edit the desired date to a future date or remove it completely to get notification for every date available. To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
-      };
-      transporter.sendMail(messageOptions, (err) => {
-        if (err) {
-          console.log(err);
-        } else {
-          request(
-            {
-              uri: `${cronJobApiBaseUrl}jobs/${jobId}`,
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${process.env.CRON_JOB_API_KEY}`,
-              },
-              json: {
-                job: {
-                  enabled: false,
-                },
-              },
-            },
-            async (err, _, body) => {
-              console.log(`LOG: delete request sent`);
-              if (err) {
-                console.log("error", err);
-                const messageOptions = {
-                  from: "arpitdalalm@gmail.com",
-                  to: "arpitdalalm@gmail",
-                  subject: "ERROR: USA visa notification service",
-                  html: `Deleting ${jobId} failed. Error: ${err}`,
-                };
-                transporter.sendMail(messageOptions, (err) => {
-                  if (err) {
-                    console.log(`Error sending email: ${err}`);
-                  }
-                });
-              }
-              if (!err) {
-                console.log("LOG: Delete request successful", body);
-              }
-            },
-          );
-        }
-      });
-    }
+    // if (isInThePast(desiredDate)) {
+    //   console.log("LOG: desired date is gone");
+    //   const messageOptions = {
+    //     from: "arpitdalalm@gmail.com",
+    //     to: email,
+    //     subject: "Notice from USA visa notification service",
+    //     html: `<h3><strong>Note: notification service has been cancelled since your desired date is in the past.</strong></h3><br><br><p>You can edit the desired date to a future date or remove it completely to get notification for every date available. To edit your profile go to <a href="http://usa-visa.herokuapp.com/profile">Your Profile</a></p>`,
+    //   };
+    //   transporter.sendMail(messageOptions, (err) => {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       request(
+    //         {
+    //           uri: `${cronJobApiBaseUrl}jobs/${jobId}`,
+    //           method: "PATCH",
+    //           headers: {
+    //             "Content-Type": "application/json",
+    //             Authorization: `Bearer ${process.env.CRON_JOB_API_KEY}`,
+    //           },
+    //           json: {
+    //             job: {
+    //               enabled: false,
+    //             },
+    //           },
+    //         },
+    //         async (err, _, body) => {
+    //           console.log(`LOG: delete request sent`);
+    //           if (err) {
+    //             console.log("error", err);
+    //             const messageOptions = {
+    //               from: "arpitdalalm@gmail.com",
+    //               to: "arpitdalalm@gmail",
+    //               subject: "ERROR: USA visa notification service",
+    //               html: `Deleting ${jobId} failed. Error: ${err}`,
+    //             };
+    //             transporter.sendMail(messageOptions, (err) => {
+    //               if (err) {
+    //                 console.log(`Error sending email: ${err}`);
+    //               }
+    //             });
+    //           }
+    //           if (!err) {
+    //             console.log("LOG: Delete request successful", body);
+    //           }
+    //         },
+    //       );
+    //     }
+    //   });
+    // }
 
     toronto.map((tempDate) => {
       if (
